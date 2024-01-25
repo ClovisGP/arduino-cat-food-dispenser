@@ -1,0 +1,45 @@
+.DisplayCase {
+    width: 25rem;
+    height: 80%;
+    border-radius: 25px;
+    background-color: beige;
+    margin: 0rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    display: inline-block;
+    padding: 0.5rem;
+}
+
+.title {
+    font-size: 100%;
+    width: 75%;
+    margin: 0rem;
+}
+
+.content {
+    font-size: 150%;
+    width: 75%;
+    margin: 0rem;
+    margin-top: 2%;
+    margin-left: 3.5%;
+}
+
+button {
+    background-color: blue;
+    color: white;
+    border-radius: 50px;
+    width: 40%;
+    height: 60%;
+    margin-top: 0rem;
+    margin-left: 30%;
+    margin-right: 30%;
+    border: 0rem solid black;
+}
+
+button:hover {
+    background-color: rgb(73, 73, 255);
+}
+
+button:active {
+    background-color: rgb(106, 106, 255);
+}
