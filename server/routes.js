@@ -14,6 +14,23 @@ const mongoURL = 'mongodb://localhost:27017/cat-food-dispenser';
 
 mongoose.connect(mongoURL);
 
+router.get('/front-cat-feeds', async (req, res) => {
+  try {
+      CatFeed.findById('6572de8846ef5b7fff772bba').then((docs)=>{
+        console.log(docs)
+        res.status(200).json({ success: true, data: docs ? docs : "{}" });
+      })
+      .catch((err)=>{
+          console.error(err);
+          res.status(500).json({ success: false, message: 'Internal Server Error' });
+      });
+      
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
 router.post('/cat-feeds', async (req, res) => {
     try {
         const CatFeedObject = new CatFeed({
@@ -26,6 +43,22 @@ router.post('/cat-feeds', async (req, res) => {
         console.error(error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
       }
+});
+
+router.get('/front-dispenser-exchange', async (req, res) => {
+  try {
+    DispenserExchange.find().then((docs)=>{
+        res.status(200).json({ success: true, data: docs ? docs.json : "{}" });
+      })
+      .catch((err)=>{
+          console.error(err);
+          res.status(500).json({ success: false, message: 'Internal Server Error' });
+      });
+      
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
 });
 
 router.post('/dispenser-exchange', async (req, res) => {
