@@ -21,7 +21,7 @@ router.get('/front-cat-feeds', async (req, res) => {
         CatFeed.find({
           datetime: {
             $gte: today,
-            $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000), // Next day
+            $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000),
           },
         }).then((docs)=>{
         res.status(200).json({ success: true, data: (docs ? docs : "{}") });
@@ -39,7 +39,7 @@ router.get('/front-cat-feeds', async (req, res) => {
 
 router.get('/front-cat-feeds-recent', async (req, res) => {
   try {
-        CatFeed.find().sort({ dateSend: -1 }).limit(1).then((docs)=>{
+        CatFeed.find().sort({ datetime: -1 }).limit(1).then((docs)=>{
         res.status(200).json({ success: true, data: (docs ? docs : "{}") });
       })
       .catch((err)=>{
@@ -69,7 +69,7 @@ router.post('/cat-feeds', async (req, res) => {
 
 router.get('/front-dispenser-exchange', async (req, res) => {
   try {
-    DispenserExchange.find().sort({ dateSend: -1 }).limit(1).then((docs)=>{
+    DispenserExchange.find({ idInfo: 0 }).sort({ datetime: -1 }).limit(1).then((docs)=>{
         res.status(200).json({ success: true, data: docs ? docs : "{}" });
       })
       .catch((err)=>{
@@ -128,13 +128,11 @@ router.post('/create-cats', async (req, res) => {
 /**
  * Only to test. Not for an usage normal
  */
-router.post('/create-update', async (req, res) => {
+router.post('/create-update', async (req, res) => {//get the last config and create an new, if there are no new, then crete one
   try {
-    let tmpJSON = new UpdateJSONTemplate(false, ["55555"], 3);
-
     const UpdatesObject = new Updates({
       datetime: Date.now(),
-      json: JSON.stringify(tmpJSON),
+      json: JSON.stringify(req.body),
       isTransmit: false,
     });
     await UpdatesObject.save();
@@ -145,9 +143,42 @@ router.post('/create-update', async (req, res) => {
     }
 });
 
+
+router.get('/current-update', async (req, res) => {
+  try {
+    Updates.findOne({isTransmit: true }).sort({ datetime: -1 }).then((docs)=>{
+      res.status(200).json({ success: true, data: docs ? docs : "{}" });
+    })
+    .catch((err)=>{
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+router.get('/front-last-update', async (req, res) => {
+  try {
+    Updates.find().sort({ datetime: -1 }).limit(1).then((docs)=>{
+      res.status(200).json({ success: true, data: docs ? docs : "{}" });
+    })
+    .catch((err)=>{
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
 router.get('/last-update', async (req, res) => {
   try {
-    Updates.findOne({isTransmit: false }).then((docs)=>{
+    Updates.findOne({isTransmit: false }).sort({ datetime: -1 }).then((docs)=>{
       res.status(200).json({ success: true, data: docs ? docs.json : "{}" });
       if (docs) {
         docs.isTransmit = true;

@@ -9,7 +9,7 @@ function DisplayCase(props) {
         {
             props.content ?
                 <div className='content'>{props.content}</div> : 
-                <button onClick={props.clickHandler} ></button>
+                <button onClick={props.clickHandler}>{props.isAlt ? props.colorButtonAlt ? 'Activé' : 'Desactiver' : ''} </button>
         }
         
     </div>
